@@ -20,15 +20,9 @@ public class RedisPoolFactory {
         JedisPoolConfig poolConfig = new JedisPoolConfig();
         poolConfig.setMaxIdle(redisConfig.getPoolMaxIdle());
         poolConfig.setMaxTotal(redisConfig.getPoolMaxTotal());
-        poolConfig.setMaxWaitMillis(redisConfig.getPoolMaxWait() * 1000);  //查看源码，方法是要设置的是毫秒值
-        JedisPool jp = new JedisPool(
-                poolConfig,
-                redisConfig.getHost(),
-                redisConfig.getPort(),
-                redisConfig.getTimeout() * 1000,
-                redisConfig.getPassword(),
-                0
-        );
+        poolConfig.setMaxWaitMillis(redisConfig.getPoolMaxWait() * 1000);
+        JedisPool jp = new JedisPool(poolConfig, redisConfig.getHost(), redisConfig.getPort(),
+                redisConfig.getTimeout() * 1000, redisConfig.getPassword(), 0);
         return jp;
     }
 

@@ -1,9 +1,13 @@
 package com.imooc.miaosha.controller;
 
 import com.imooc.miaosha.domain.User;
+import com.imooc.miaosha.redis.RedisService;
+import com.imooc.miaosha.redis.UserKey;
 import com.imooc.miaosha.result.CodeMsg;
 import com.imooc.miaosha.result.Result;
 import com.imooc.miaosha.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,8 +18,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/demo")
 public class DemoController {
 
+    private final static Logger logger = LoggerFactory.getLogger(DemoController.class);
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RedisService redisService;
 
     @RequestMapping("/")
     @ResponseBody
@@ -60,7 +69,7 @@ public class DemoController {
     @RequestMapping("/tx")
     @ResponseBody
     public void demoTx() {
-        User user = new User(1,"zhangsan");
+        User user = new User(1, "zhangsan");
         userService.add(user);
     }
 
@@ -68,6 +77,24 @@ public class DemoController {
     @ResponseBody
     public boolean addTx() {
         return userService.addTx();
+    }
+
+    @RequestMapping("/redis/get")
+    @ResponseBody
+    public Result<User> redisGet() {
+        User user = redisService.get(UserKey.getById, "" + 1, User.class);
+        logger.info(String.format("run method redisGet resultParams = %s", user.toString()));
+        return Result.success(user);
+    }
+
+    @RequestMapping("/redis/set")
+    @ResponseBody
+    public Result<Boolean> redisSet() {
+        User user = new User();
+        user.setId(2);
+        user.setName("2222");
+        redisService.set(UserKey.getById, "" + 1, User.class);
+        return Result.success(true);
     }
 
 }
