@@ -15,6 +15,8 @@ public class RedisService {
     JedisPool jedisPool;
 
 
+
+
     /**
      * 获取单个对象
      * @param prefix
