@@ -18,6 +18,7 @@ public class RedisService {
 
 
 
+
     /**
      * 获取单个对象
      * @param prefix
