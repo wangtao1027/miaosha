@@ -82,6 +82,7 @@ public class DemoController {
     @RequestMapping("/redis/get")
     @ResponseBody
     public Result<User> redisGet() {
+        //UserKey:id1
         User user = redisService.get(UserKey.getById, "" + 1, User.class);
         logger.info(String.format("run method redisGet resultParams = %s", user.toString()));
         return Result.success(user);
@@ -91,9 +92,9 @@ public class DemoController {
     @ResponseBody
     public Result<Boolean> redisSet() {
         User user = new User();
-        user.setId(2);
-        user.setName("2222");
-        redisService.set(UserKey.getById, "" + 1, User.class);
+        user.setId(1);
+        user.setName("1111");
+        redisService.set(UserKey.getById, "" + 1, user);
         return Result.success(true);
     }
 

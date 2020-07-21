@@ -23,7 +23,7 @@ public class Result<T> {
 	 * 成功时候调用
 	 * @param data
 	 */
-	private   Result(T data) {
+	private Result(T data) {
 		this.code = 0;
 		this.msg = "success";
 		this.data = data;

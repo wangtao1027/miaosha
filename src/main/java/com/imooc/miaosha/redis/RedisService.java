@@ -14,17 +14,6 @@ public class RedisService {
     @Autowired
     JedisPool jedisPool;
 
-
-
-
-
-
-
-
-
-
-
-
     /**
      * 获取单个对象
      * @param prefix
@@ -62,9 +51,9 @@ public class RedisService {
             String realKey  = prefix.getPrefix() + key;
             int seconds =  prefix.expireSeconds();
             if(seconds <= 0) {
-                jedis.set(realKey, str);
+                jedis.set(realKey, str);    //数据持久化
             }else {
-                jedis.setex(realKey, seconds, str);
+                jedis.setex(realKey, seconds, str); //设置过期时间
             }
             return true;
         }finally {
@@ -133,7 +122,7 @@ public class RedisService {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")     //编译器忽略指定的警告，不用在编译完成后出现警告信息。
     private <T> T stringToBean(String str, Class<T> clazz) {
         if(str == null || str.length() <= 0 || clazz == null) {
             return null;
