@@ -2,7 +2,7 @@ package com.imooc.miaosha.redis;
 
 public class MiaoshaUserKey extends BasePrefix{
 
-	public static final int TOKEN_EXPIRE = 3600*24 * 2;
+	public static final int TOKEN_EXPIRE = 3600*24 * 2;	//过期时间设置为两天
 	private MiaoshaUserKey(int expireSeconds, String prefix) {
 		super(expireSeconds, prefix);
 	}
