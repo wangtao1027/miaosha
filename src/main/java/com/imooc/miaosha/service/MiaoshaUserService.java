@@ -43,11 +43,14 @@ public class MiaoshaUserService {
         }
         String mobile = loginVo.getMobile();
         String password = loginVo.getPassword();
+
         //校验手机号
         MiaoshaUser user = getById(Long.valueOf(mobile));
         if (user == null) {
             throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
         }
+
+        //校验密码
         String dbPassword = user.getPassword();
         String dbSalt = user.getSalt();
         String str = MD5Util.formPassToDbPass(password, dbSalt);
@@ -55,7 +58,6 @@ public class MiaoshaUserService {
         if (!dbPassword.equals(str)) {
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }
-        //校验密码
         return true;
     }
 
