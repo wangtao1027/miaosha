@@ -54,7 +54,6 @@ public class MiaoshaUserService {
         String dbPassword = user.getPassword();
         String dbSalt = user.getSalt();
         String str = MD5Util.formPassToDbPass(password, dbSalt);
-        logger.error("inputPassword :" + str);
         if (!dbPassword.equals(str)) {
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }

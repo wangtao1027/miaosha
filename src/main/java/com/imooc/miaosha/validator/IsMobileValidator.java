@@ -7,7 +7,7 @@ import javax.validation.ConstraintValidatorContext;
 
 public class IsMobileValidator implements ConstraintValidator<IsMobile, String> {
 
-	private boolean required = false;
+	private boolean required = false;		//参数为空时设置默认值为空
 	
 	public void initialize(IsMobile constraintAnnotation) {
 		required = constraintAnnotation.required();
