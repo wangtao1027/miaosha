@@ -50,6 +50,8 @@ public class MiaoshaUserService {
             throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
         }
 
+
+
         //校验密码
         String dbPassword = user.getPassword();
         String dbSalt = user.getSalt();
