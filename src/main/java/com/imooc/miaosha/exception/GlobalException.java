@@ -9,7 +9,7 @@ public class GlobalException extends RuntimeException {
     private CodeMsg cm;
 
     public GlobalException(CodeMsg cm) {
-        super(cm.toString());
+        super(cm.toString());   //这一步其实需要不需要都可以
         this.cm = cm;
     }
 

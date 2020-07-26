@@ -22,6 +22,10 @@ public class LoginController {
     @Autowired
     private MiaoshaUserService userService;
 
+    /**
+     * 跳转到login页面
+     * @return
+     */
     @RequestMapping("/to_login")
     public String toLogin() {
         return "login";
@@ -31,7 +35,7 @@ public class LoginController {
     @ResponseBody
     public Result<Boolean> doLogin(HttpServletResponse response,@Valid LoginVo loginVo) {
         logger.info(loginVo.toString());    //d3b1294a61a07da9b49b6e22b2cbd7f9
-        userService.login(loginVo);
+        userService.login(response,loginVo);
         return Result.success(true);
     }
 

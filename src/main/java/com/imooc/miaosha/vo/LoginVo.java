@@ -14,6 +14,6 @@ public class LoginVo {
     private String mobile;
 
     @NotNull
-    @Length(min = 32)
+    @Length(min = 32)   //长度最小为32
     private String password;
 }
