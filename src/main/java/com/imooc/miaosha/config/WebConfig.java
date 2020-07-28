@@ -14,7 +14,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private UserArgumentResolver userArgumentResolver;  //注册我们定义的resolver
 
     @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {   //遍历SpringMVC方法的参数值,然后为他们设置值
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {   //方法功能:遍历SpringMVC方法的参数值,然后为他们设置值
         argumentResolvers.add(userArgumentResolver);
     }
 

@@ -38,7 +38,7 @@ public class MiaoshaUserService {
 
     //登录方法
     public boolean login(HttpServletResponse response, LoginVo loginVo) {
-        //校验参数是否为空
+        //校验参数是否为空,参数为空系统异常
         if (loginVo == null) {
             throw new GlobalException(CodeMsg.SERVER_ERROR);
         }
@@ -94,9 +94,9 @@ public class MiaoshaUserService {
 
     //方法抽取
     public void addCookie(HttpServletResponse response, String token, MiaoshaUser user) {
-        redisService.set(MiaoshaUserKey.token, token, user);
+        redisService.set(MiaoshaUserKey.token, token, user);   //将用户信息存入到缓存中
         Cookie cookie = new Cookie(COOKI_NAME_TOKEN, token);
-        cookie.setMaxAge(MiaoshaUserKey.token.expireSeconds());
+        cookie.setMaxAge(MiaoshaUserKey.token.expireSeconds()); //如果redis中数据过期,那么cookie中的数据也过期
         cookie.setPath("/");
         response.addCookie(cookie);
     }
