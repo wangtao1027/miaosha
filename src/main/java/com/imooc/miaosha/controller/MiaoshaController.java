@@ -39,9 +39,9 @@ public class MiaoshaController {
             return "login";
         }
         GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
-        Integer stockCount = goods.getStockCount();
+        int stock = goods.getStockCount();
         //判断是否还有库存
-        if (stockCount <= 0) {
+        if (stock <= 0) {
             model.addAttribute("errmsg", CodeMsg.MIAO_SHA_OVER.getMsg());
             return "miaosha_fail";
         }
@@ -52,7 +52,7 @@ public class MiaoshaController {
             model.addAttribute("errmsg",CodeMsg.REPEATE_MIAOSHA.getMsg());
             return "miaosha_fail";
         }
-        //扣减库存,创建订单
+        //扣减库存,创建订单 写入秒杀订单
         OrderInfo orderInfo = miaoshaService.miaosha(user, goods);
         model.addAttribute("orderInfo",orderInfo);
         model.addAttribute("goods",goods);

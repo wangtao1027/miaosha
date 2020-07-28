@@ -6,14 +6,18 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class MiaoshaGoods implements Serializable {
+public class MiaoShaGoods implements Serializable {
 
-    private static final long serialVersionUID = 2732998320440041185L;
+    private static final long serialVersionUID = 3882085332993820019L;
 
     private Long id;
+
     private Long goodsId;
+
     private Integer stockCount;
+
     private Date startDate;
+
     private Date endDate;
 
 }
