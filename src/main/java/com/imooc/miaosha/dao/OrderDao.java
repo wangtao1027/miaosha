@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface OrderDao {
 
-    @Select("select * from miaosha_order where user_id = #{userId} and order_id = #{orderId}")
+    @Select("select * from miaosha_order where user_id = #{userId} and goods_id = #{goodsId}")
     MiaoShaOrder getMiaoshaOrderByUserIdGoodsId(@Param("userId") Long userId, @Param("goodsId") Long goodsId);
 
     //向订单表中添加数据

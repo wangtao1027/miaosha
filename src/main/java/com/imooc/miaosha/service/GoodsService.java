@@ -23,10 +23,10 @@ public class GoodsService {
     }
 
     //扣减库存
-    public int reduceStock(GoodsVo goodsVo) {
+    public void reduceStock(GoodsVo goodsVo) {
         MiaoShaGoods miaoShaGoods = new MiaoShaGoods();
-        miaoShaGoods.setId(goodsVo.getId());
-        return goodsDao.reduceStock(miaoShaGoods);
+        miaoShaGoods.setGoodsId(goodsVo.getId());
+        goodsDao.reduceStock(miaoShaGoods);
     }
 
 }
