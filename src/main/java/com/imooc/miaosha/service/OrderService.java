@@ -5,6 +5,8 @@ import com.imooc.miaosha.domain.MiaoShaOrder;
 import com.imooc.miaosha.domain.MiaoshaUser;
 import com.imooc.miaosha.domain.OrderInfo;
 import com.imooc.miaosha.vo.GoodsVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,8 @@ import java.util.Date;
 
 @Service
 public class OrderService {
+
+    private final static Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     @Resource
     private OrderDao orderDao;
@@ -25,7 +29,7 @@ public class OrderService {
     @Transactional(rollbackFor = Exception.class)
     public OrderInfo createOrder(MiaoshaUser user, GoodsVo goods) {
         OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setId(user.getId());
+        orderInfo.setUserId(user.getId());
         orderInfo.setGoodsId(goods.getId());
         orderInfo.setDeliveryAddrId(0L);
         orderInfo.setGoodsName(goods.getGoodsName());
