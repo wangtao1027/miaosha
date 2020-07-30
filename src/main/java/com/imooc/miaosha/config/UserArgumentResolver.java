@@ -24,7 +24,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         Class<?> clazz = parameter.getParameterType();  //如果类型是MiaoShaUser,的时候返回为true,才会做下面的处理
-        return clazz== MiaoshaUser.class;
+        return clazz == MiaoshaUser.class;
     }
 
     @Override
@@ -34,18 +34,21 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
 
         String paramToken = request.getParameter(MiaoshaUserService.COOKI_NAME_TOKEN);
-        String cookieToken = getCookieValue(request,MiaoshaUserService.COOKI_NAME_TOKEN);
+        String cookieToken = getCookieValue(request, MiaoshaUserService.COOKI_NAME_TOKEN);
         if (StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
             //如果都为空则返回登录页面
             return "login";
         }
 
-        String token = StringUtils.isEmpty(paramToken) ? cookieToken:paramToken;    //如果参数中为空,则从cookie中开始取
-        return userService.getByToken(response,token);  //这里面response可能是一个空的
+        String token = StringUtils.isEmpty(paramToken) ? cookieToken : paramToken;    //如果参数中为空,则从cookie中开始取
+        return userService.getByToken(response, token);  //这里面response可能是一个空的
     }
 
     private String getCookieValue(HttpServletRequest request, String cookiName) {
         Cookie[] cookies = request.getCookies();    //遍历所以cookie
+        if (cookies == null || cookies.length <= 0) {
+            return null;
+        }
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(cookiName)) {
                 return cookie.getValue();
