@@ -1,6 +1,7 @@
 package com.imooc.miaosha.service;
 
 import com.imooc.miaosha.dao.GoodsDao;
+import com.imooc.miaosha.domain.Goods;
 import com.imooc.miaosha.domain.MiaoShaGoods;
 import com.imooc.miaosha.vo.GoodsVo;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,21 @@ public class GoodsService {
         MiaoShaGoods miaoShaGoods = new MiaoShaGoods();
         miaoShaGoods.setGoodsId(goodsVo.getId());
         goodsDao.reduceStock(miaoShaGoods);
+    }
+
+    //批量查询
+    public List<Goods> batchQuery(List<String> idList) {
+        return goodsDao.batchQuery(idList);
+    }
+
+    //批量插入
+    public int batchInsert(List<Goods> goodsList) {
+        return goodsDao.batchInsert(goodsList);
+    }
+
+    //批量更新
+    public int batchUpdate(List<Goods> goodsList) {
+        return goodsDao.batchUpdate(goodsList);
     }
 
 }

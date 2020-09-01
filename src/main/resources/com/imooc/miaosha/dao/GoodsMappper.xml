@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.miaosha.dao.GoodsDao">
+    <resultMap id="BaseResultMap" type="com.imooc.miaosha.domain.Goods">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="goods_title" jdbcType="VARCHAR" property="goodsTitle"/>
+        <result column="goods_img" jdbcType="VARCHAR" property="goodsImg"/>
+        <result column="goods_price" jdbcType="DECIMAL" property="goodsPrice"/>
+        <result column="goods_stock" jdbcType="INTEGER" property="goodsStock"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.imooc.miaosha.domain.Goods">
+        <result column="goods_detail" jdbcType="LONGVARCHAR" property="goodsDetail"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, goods_name, goods_title, goods_img, goods_price, goods_stock
+  </sql>
+    <sql id="Blob_Column_List">
+    goods_detail
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from goods
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from goods
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.imooc.miaosha.domain.Goods"
+            useGeneratedKeys="true">
+    insert into goods (goods_name, goods_title, goods_img, 
+      goods_price, goods_stock, goods_detail
+      )
+    values (#{goodsName,jdbcType=VARCHAR}, #{goodsTitle,jdbcType=VARCHAR}, #{goodsImg,jdbcType=VARCHAR}, 
+      #{goodsPrice,jdbcType=DECIMAL}, #{goodsStock,jdbcType=INTEGER}, #{goodsDetail,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.imooc.miaosha.domain.Goods"
+            useGeneratedKeys="true">
+        insert into goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsName != null">
+                goods_name,
+            </if>
+            <if test="goodsTitle != null">
+                goods_title,
+            </if>
+            <if test="goodsImg != null">
+                goods_img,
+            </if>
+            <if test="goodsPrice != null">
+                goods_price,
+            </if>
+            <if test="goodsStock != null">
+                goods_stock,
+            </if>
+            <if test="goodsDetail != null">
+                goods_detail,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsName != null">
+                #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsTitle != null">
+                #{goodsTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsImg != null">
+                #{goodsImg,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsPrice != null">
+                #{goodsPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="goodsStock != null">
+                #{goodsStock,jdbcType=INTEGER},
+            </if>
+            <if test="goodsDetail != null">
+                #{goodsDetail,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.imooc.miaosha.domain.Goods">
+        update goods
+        <set>
+            <if test="goodsName != null">
+                goods_name = #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsTitle != null">
+                goods_title = #{goodsTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsImg != null">
+                goods_img = #{goodsImg,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsPrice != null">
+                goods_price = #{goodsPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="goodsStock != null">
+                goods_stock = #{goodsStock,jdbcType=INTEGER},
+            </if>
+            <if test="goodsDetail != null">
+                goods_detail = #{goodsDetail,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.imooc.miaosha.domain.Goods">
+    update goods
+    set goods_name = #{goodsName,jdbcType=VARCHAR},
+      goods_title = #{goodsTitle,jdbcType=VARCHAR},
+      goods_img = #{goodsImg,jdbcType=VARCHAR},
+      goods_price = #{goodsPrice,jdbcType=DECIMAL},
+      goods_stock = #{goodsStock,jdbcType=INTEGER},
+      goods_detail = #{goodsDetail,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.imooc.miaosha.domain.Goods">
+    update goods
+    set goods_name = #{goodsName,jdbcType=VARCHAR},
+      goods_title = #{goodsTitle,jdbcType=VARCHAR},
+      goods_img = #{goodsImg,jdbcType=VARCHAR},
+      goods_price = #{goodsPrice,jdbcType=DECIMAL},
+      goods_stock = #{goodsStock,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="batchQuery" parameterType="java.util.List" resultType="goods">
+        select
+        id,
+        goods_name,
+        goods_title,
+        goods_img,
+        goods_detail,
+        goods_price,
+        goods_stock
+        from goods
+        where id in
+        <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="com.imooc.miaosha.domain.Goods"
+            useGeneratedKeys="true">
+        insert into goods (id,goods_name, goods_title, goods_img,
+        goods_price, goods_stock, goods_detail
+        ) values
+        <foreach collection="goodsList" item="goods" index="index" separator=",">
+            (
+            #{goods.id,jdbcType=BIGINT},#{goods.goodsName,jdbcType=VARCHAR}, #{goods.goodsTitle,jdbcType=VARCHAR},
+            #{goods.goodsImg,jdbcType=VARCHAR},
+            #{goods.goodsPrice,jdbcType=DECIMAL}, #{goods.goodsStock,jdbcType=INTEGER},
+            #{goods.goodsDetail,jdbcType=LONGVARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <update id="batchUpdate" parameterType="goods">
+        update goods
+        <foreach collection="goodsList" item="goods" index="index" open="(" close=")" separator=",">
+            set goods_name = #{goods.goodsName,jdbcType=VARCHAR},
+            goods_title = #{goods.goodsTitle,jdbcType=VARCHAR},
+            goods_img = #{goods.goodsImg,jdbcType=VARCHAR},
+            goods_price = #{goods.goodsPrice,jdbcType=DECIMAL},
+            goods_stock = #{goods.goodsStock,jdbcType=INTEGER}
+            where id = #{goods.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+</mapper>

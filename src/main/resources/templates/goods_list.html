@@ -21,8 +21,20 @@
 
 </head>
 <body>
+
 <div class="panel panel-default">
     <div class="panel-heading">秒杀商品列表</div>
+    <div>
+        <button id="downloadTemplate" style="background-color: #5bc0de">下载模板</button>
+        <form method="post" action="/excel/import" enctype ="multipart/form-data">
+            <input type="file" name="file"/>
+            <input type="submit" value="测试提交" style="background-color: #5bc0de" />
+        </form>
+        <button id="exportButton" style="background-color: #5bc0de">商品导出</button>
+<!--        <button id="demoTest" -->
+        <input id="demoTest" type="button" value="批量导入" />
+    </div>
+
     <table class="table" id="goodslist">
         <tr><td>商品名称</td><td>商品图片</td><td>商品原价</td><td>秒杀价</td><td>库存数量</td><td>详情</td></tr>
         <tr  th:each="goods,goodsStat : ${goodsList}">
@@ -31,9 +43,48 @@
             <td th:text="${goods.goodsPrice}"></td>
             <td th:text="${goods.miaoshaPrice}"></td>
             <td th:text="${goods.stockCount}"></td>
-            <td><a th:href="'/goods/to_detail/'+${goods.id}">详情</a></td>
+            <!--<td><a th:href="'/goods/to_detail/'+${goods.id}">详情</a></td>-->
+            <!--测试url级缓存-->
+            <td><a th:href="'/goods/to_detail2/'+${goods.id}">详情</a></td>
         </tr>
     </table>
+
 </div>
+
+<script>
+    $("#downloadTemplate").click(function () {
+        window.location.href = "/excel/downloadTemplate";
+    });
+    $("#importButton").click(function () {
+        // layer.alert("导入");
+    });
+
+    $("#exportButton").click(function () {
+        layer.alert("点击了导出按钮!");
+        window.location.href = "/excel/export";
+        // $.ajax({
+        //     url: "/excel/export",
+        //     type: "GET",
+        //     data:{},
+        //     success:function(data){
+        //         // layer.closeAll();
+        //         // if(data.code == 0){
+        //         //     layer.msg("成功");
+        //         //     window.location.href="/goods/to_list";
+        //         // }else{
+        //         //     layer.msg(data.msg);
+        //         // }
+        //         layer.msg("导出成功!")
+        //     },
+        //     error:function(){
+        //         layer.closeAll();
+        //     }
+        // });
+    });
+
+    $("#demoTest").click(function () {
+        layer.alert("批量导入!");
+    });
+</script>
 </body>
 </html>

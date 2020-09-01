@@ -33,7 +33,43 @@ public class MiaoshaUserService {
     private RedisService redisService;
 
     public MiaoshaUser getById(Long id) {
-        return miaoshaUserDao.getById(id);
+        //从缓存中读取
+        MiaoshaUser user = redisService.get(MiaoshaUserKey.getById, "" + id, MiaoshaUser.class);
+        if (user != null) {
+            return user;
+        }
+        user = miaoshaUserDao.getById(id);
+        if (user != null) {
+            redisService.set(MiaoshaUserKey.getById,"" + id,user);
+        }
+        return user;
+    }
+
+    /**
+     * 更新密码操作
+     * @param token
+     * @param id
+     * @param formPass
+     * @return
+     */
+    public boolean updatePassword(String token,long id,String formPass) {
+        MiaoshaUser user = getById(id);
+        if (user == null) {
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+        }
+
+        //先更新数据库,在删除缓存,不然并发读修改,会造成只能取到旧的缓存
+        //更新数据库
+        MiaoshaUser toBeUpdate = new MiaoshaUser();
+        toBeUpdate.setId(id);
+        toBeUpdate.setPassword(MD5Util.formPassToDbPass(formPass,user.getSalt()));
+        miaoshaUserDao.update(toBeUpdate);
+
+        //清除缓存
+        redisService.delete(MiaoshaUserKey.getById,"" + id);
+        user.setPassword(toBeUpdate.getPassword());
+        redisService.set(MiaoshaUserKey.token, token,user);
+        return true;
     }
 
     //登录方法
