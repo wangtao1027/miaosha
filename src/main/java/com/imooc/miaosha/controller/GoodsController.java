@@ -164,6 +164,7 @@ public class GoodsController {
     @RequestMapping(value = "/to_detail2/{goodsId}", produces = "text/html")
     @ResponseBody
     public String detail2(HttpServletRequest request, HttpServletResponse response, Model model, MiaoshaUser user, @PathVariable("goodsId") long goodsId) {
+
         logger.info("run method detail2");
         model.addAttribute("user", user);
 
