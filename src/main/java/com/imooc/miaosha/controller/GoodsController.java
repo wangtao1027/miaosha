@@ -127,13 +127,13 @@ public class GoodsController {
 
         int miaoshaStatus = 0;  // 状态:0,未开始,1,正在进行中,2已经结束
         int remainSeconds = 0;
-        int startTime = (int) goods.getStartDate().getTime();
-        int endTime = (int) goods.getEndDate().getTime();
-        int curTime = (int) System.currentTimeMillis();
+        long startTime =  goods.getStartDate().getTime();
+        long endTime =  goods.getEndDate().getTime();
+        long curTime =  System.currentTimeMillis();
 
         if (curTime < startTime) {  //未开始
             miaoshaStatus = 0;
-            remainSeconds = startTime - curTime / 1000;
+            remainSeconds = (int) ((startTime - curTime) / 1000);
         } else if (curTime > endTime) { //结束
             miaoshaStatus = 2;
             remainSeconds = -1;

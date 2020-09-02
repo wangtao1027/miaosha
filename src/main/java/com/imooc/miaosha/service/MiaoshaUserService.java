@@ -52,6 +52,7 @@ public class MiaoshaUserService {
      * @param formPass
      * @return
      */
+    // http://blog.csdn.net/tTU1EvLDeLFq5btqiK/article/details/78693323         //先更新数据库,在删除缓存
     public boolean updatePassword(String token,long id,String formPass) {
         MiaoshaUser user = getById(id);
         if (user == null) {

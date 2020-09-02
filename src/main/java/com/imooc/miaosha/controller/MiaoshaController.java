@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/miaosha")
@@ -33,6 +34,7 @@ public class MiaoshaController {
     private MiaoshaService miaoshaService;
 
     @RequestMapping("/do_miaosha")
+    @ResponseBody
     public Result<OrderInfo> list(Model model, MiaoshaUser user, @RequestParam("goodsId") Long goodsId) {
         logger.info("run method list");
         model.addAttribute("user",user);
