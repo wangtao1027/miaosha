@@ -68,12 +68,43 @@
 
 <script>
     function render(detail) {
-
+        var goods = detail.goods;
+        var order = detail.order;
+        $("#goodsName").val(goods);
+        // $("#goodsName").text(goods.goodsName);
+        // $("#goodsImg").attr("src", goods.goodsImg);
+        // $("#startTime").text(new Date(goods.startDate).format("yyyy-MM-dd hh:mm:ss"));
+        // $("#remainSeconds").val(remainSeconds);
+        // $("#goodsId").val(goods.id);
+        // $("#goodsPrice").text(goods.goodsPrice);    //商品原价
+        // $("#miaoshaPrice").text(goods.miaoshaPrice);  //秒杀价格
+        // $("#stockCount").text(goods.stockCount);  //库存数量
     }
 
     $(function () {
-        render();
+        //调用获取秒杀订单方法
+        getOrderDetail
     });
+
+    //获取秒杀订单方法
+    function getOrderDetail() {
+        var orderId = g_getQueryString("orderId");
+        $.ajax({
+            url: "/order/detail/" + goodsId,
+            type: "GET",
+            data:{orderId:orderId},
+            success: function (data) {
+                if (data.code == 0) {
+                    render(data.data);
+                } else {
+                    layer.msg(data.msg);
+                }
+            },
+            error: function () {
+                layer.msg("客户端请求错误!");
+            }
+        });
+    }
 </script>
 </body>
 </html>

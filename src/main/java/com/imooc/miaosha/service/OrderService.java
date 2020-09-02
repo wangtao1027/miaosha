@@ -25,6 +25,10 @@ public class OrderService {
         return orderDao.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
     }
 
+    public OrderInfo getOrderById(long orderId){
+        return orderDao.getOrderById(orderId);
+    }
+
    //穿件订单,创建订单表,穿件订单关联表
     @Transactional(rollbackFor = Exception.class)
     public OrderInfo createOrder(MiaoshaUser user, GoodsVo goods) {
