@@ -122,7 +122,7 @@ public class RedisService {
         }
     }
 
-    private <T> String beanToString(T value) {
+    public <T> String beanToString(T value) {
         if(value == null) {
             return null;
         }
@@ -139,7 +139,7 @@ public class RedisService {
     }
 
     @SuppressWarnings("unchecked")     //编译器忽略指定的警告，不用在编译完成后出现警告信息。
-    private <T> T stringToBean(String str, Class<T> clazz) {
+    public <T> T stringToBean(String str, Class<T> clazz) {
         if(str == null || str.length() <= 0 || clazz == null) {
             return null;
         }

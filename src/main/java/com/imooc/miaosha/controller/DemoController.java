@@ -1,6 +1,7 @@
 package com.imooc.miaosha.controller;
 
 import com.imooc.miaosha.domain.User;
+import com.imooc.miaosha.rabbitmq.MQSender;
 import com.imooc.miaosha.redis.RedisService;
 import com.imooc.miaosha.redis.UserKey;
 import com.imooc.miaosha.result.CodeMsg;
@@ -25,6 +26,9 @@ public class DemoController {
 
     @Autowired
     private RedisService redisService;
+
+    @Autowired
+    private MQSender mqSender;
 
     @RequestMapping("/")
     @ResponseBody
@@ -96,6 +100,14 @@ public class DemoController {
         user.setName("1111");
         redisService.set(UserKey.getById, "" + 1, user);
         return Result.success(true);
+    }
+
+    //测试RabbitMQ
+    @RequestMapping("/mq")
+    @ResponseBody
+    public Result<String> mq() {
+        mqSender.send("hello hanxiang");
+        return Result.success("请求成功!");
     }
 
 }

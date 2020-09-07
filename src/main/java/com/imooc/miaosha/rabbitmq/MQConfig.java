@@ -1,6 +1,9 @@
 package com.imooc.miaosha.rabbitmq;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import org.springframework.amqp.core.Queue;
 
 /**
  * @author wt
@@ -10,13 +13,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MQConfig {
 
-    public static final String MIAOSHA_QUEUE = "quere";
-    public static final String queue = "queue";
-    public static final String TOPIC_QUEUE1 = "topic_queue1";
-    public static final String TOPIC_QUEUE2 = "topic_queue2";
-    public static final String FANT_OUT1 = "fan_out1";
-    public static final String FANT_OUT2 = "fan_out2";
-    public static final String TOPIC1 = "topic1";
-    public static final String TOPIC2 = "topic2";
+//    public static final String MIAOSHA_QUEUE = "quere";
+    public static final String QUEUE = "queue";
+//    public static final String TOPIC_QUEUE1 = "topic_queue1";
+//    public static final String TOPIC_QUEUE2 = "topic_queue2";
+//    public static final String FANT_OUT1 = "fan_out1";
+//    public static final String FANT_OUT2 = "fan_out2";
+//    public static final String TOPIC1 = "topic1";
+//    public static final String TOPIC2 = "topic2";
+
+    @Bean
+    public Queue queue() {
+        return new Queue(QUEUE,true);
+    }
 
 }

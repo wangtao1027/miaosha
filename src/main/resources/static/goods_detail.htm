@@ -101,7 +101,7 @@
             data: {goodsId: $("#goodsId").val()},
             success: function (data) {
                 if (data.code == 0) {
-                    window.location.href="/order_detail.htm?orderId="+data.data.id;
+                    window.location.href="/order_detail.htm?orderId="+data.data.id;      //跳转到详情页面
                 } else {
                     layer.msg(data.msg());
                 }
