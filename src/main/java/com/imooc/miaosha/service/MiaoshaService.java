@@ -23,7 +23,7 @@ public class MiaoshaService {
     //扣减库存,创建订单
     @Transactional(rollbackFor = Exception.class)
     public OrderInfo miaosha(MiaoshaUser user, GoodsVo goods) {
-        logger.error("run method miaosha --> params=" + goods.toString());
+        logger.info(String.format("run method miaosha param=%s",goods.toString()));
         goodsService.reduceStock(goods);
         return orderService.createOrder(user, goods);
     }

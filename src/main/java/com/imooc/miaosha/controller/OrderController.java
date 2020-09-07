@@ -53,6 +53,7 @@ public class OrderController {
         OrderDetailVo vo = new OrderDetailVo();
         vo.setGoods(goods);
         vo.setOrder(order);
+
         return Result.success(vo);
     }
 

@@ -35,9 +35,9 @@ public class MiaoshaController {
 
     @RequestMapping("/do_miaosha")
     @ResponseBody
-    public Result<OrderInfo> list(Model model, MiaoshaUser user, @RequestParam("goodsId") Long goodsId) {
-        logger.info("run method list");
-        model.addAttribute("user",user);
+    public Result<OrderInfo> miaosha(Model model, MiaoshaUser user, @RequestParam("goodsId") Long goodsId) {
+        logger.info(String.format("run method miaosha param=%s", goodsId));
+        model.addAttribute("user", user);
         if (user == null) {
             return Result.error(CodeMsg.SESSION_ERROR);
         }

@@ -42,13 +42,13 @@
      </tr>
      <tr>
      	<td>订单状态</td>
-        <td >
-        	<span if="${orderInfo.status eq 0}">未支付</span>
-        	<span if="${orderInfo.status eq 1}">待发货</span>
-        	<span if="${orderInfo.status eq 2}">已发货</span>
-        	<span if="${orderInfo.status eq 3}">已收货</span>
-        	<span if="${orderInfo.status eq 4}">已退款</span>
-        	<span if="${orderInfo.status eq 5}">已完成</span>
+        <td id="orderStatus">
+<!--        	<span if="${orderInfo.status eq 0}">未支付</span>-->
+<!--        	<span if="${orderInfo.status eq 1}">待发货</span>-->
+<!--        	<span if="${orderInfo.status eq 2}">已发货</span>-->
+<!--        	<span if="${orderInfo.status eq 3}">已收货</span>-->
+<!--        	<span if="${orderInfo.status eq 4}">已退款</span>-->
+<!--        	<span if="${orderInfo.status eq 5}">已完成</span>-->
         </td>
         <td>
         	<button class="btn btn-primary btn-block" type="submit" id="payButton">立即支付</button>
@@ -70,27 +70,29 @@
     function render(detail) {
         var goods = detail.goods;
         var order = detail.order;
-        $("#goodsName").val(goods);
-        // $("#goodsName").text(goods.goodsName);
-        // $("#goodsImg").attr("src", goods.goodsImg);
-        // $("#startTime").text(new Date(goods.startDate).format("yyyy-MM-dd hh:mm:ss"));
-        // $("#remainSeconds").val(remainSeconds);
-        // $("#goodsId").val(goods.id);
-        // $("#goodsPrice").text(goods.goodsPrice);    //商品原价
-        // $("#miaoshaPrice").text(goods.miaoshaPrice);  //秒杀价格
-        // $("#stockCount").text(goods.stockCount);  //库存数量
+        $("#goodsName").text(goods.goodsName);
+        $("#goodsImg").attr("src", goods.goodsImg);
+        $("#goodsPrice").text(goods.goodsPrice);    //商品原价
+        $("#createDate").text(new Date(order.createDate).format("yyyy-MM-dd hh:mm:ss"));    //创建订单时间
+        var status = "";
+        if (order.status == 0) {
+            status = "未支付";
+        } else if (order.status == 1) {
+            status = "已支付";
+        }
+        $("#orderStatus").text(status);
     }
 
     $(function () {
         //调用获取秒杀订单方法
-        getOrderDetail
+        getOrderDetail();
     });
 
     //获取秒杀订单方法
     function getOrderDetail() {
         var orderId = g_getQueryString("orderId");
         $.ajax({
-            url: "/order/detail/" + goodsId,
+            url: "/order/detail",
             type: "GET",
             data:{orderId:orderId},
             success: function (data) {
