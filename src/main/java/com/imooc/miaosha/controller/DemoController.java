@@ -110,4 +110,18 @@ public class DemoController {
         return Result.success("请求成功!");
     }
 
+    @RequestMapping("/mq/topic")
+    @ResponseBody
+    public Result<String> topic() {
+        mqSender.sendTopic("hello hanxiang");
+        return Result.success("请求成功!");
+    }
+
+    @RequestMapping("/mq/fanout")
+    @ResponseBody
+    public Result<String> fanout() {
+        mqSender.sendFanout("hello hanxiang");
+        return Result.success("请求成功!");
+    }
+
 }
