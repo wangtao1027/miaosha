@@ -34,9 +34,14 @@ public class MQReceiver {
         logger.error("receiveTopic2收到的信息是:" + message);
     }
 
-// fantout迷行两个交换机都能显示对应的消息
+// fantout两个交换机都能显示对应的消息
 //    @RabbitListener(queues = MQConfig.FANOUT_EXCHANGE)
 //    public void receiveFanout(String message) {
 //        logger.error("receiveFanout收到的信息是:" + message);
 //    }
+
+    @RabbitListener(queues = MQConfig.HEADER_QUEUE)
+    public void receiveHeader(byte[] message) {
+        logger.error("receiveHeader:" + new String(message));
+    }
 }

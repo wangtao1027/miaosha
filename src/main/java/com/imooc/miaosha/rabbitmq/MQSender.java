@@ -4,6 +4,7 @@ import com.imooc.miaosha.redis.RedisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,8 +42,11 @@ public class MQSender {
     public void sendHeader(Object message) {
         logger.warn(String.format("sendHeader 发送的消息是: %s", message));
         String msg = redisService.beanToString(message);
-//        amqpTemplate.convertAndSend(MQConfig.HEADER_QUEUE,"",msg);
         MessageProperties properties = new MessageProperties();
+        properties.setHeader("header1", "value1");
+        properties.setHeader("header2", "value2");
+        Message obj = new Message(msg.getBytes(), properties);
+        amqpTemplate.convertAndSend(MQConfig.HEADERS_EXCHANGE, "", obj);
     }
 
 }
