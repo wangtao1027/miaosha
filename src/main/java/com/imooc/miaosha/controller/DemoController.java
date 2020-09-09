@@ -127,7 +127,7 @@ public class DemoController {
     @RequestMapping("/mq/header")
     @ResponseBody
     public Result<String> header() {
-        mqSender.sendHeader("hello hanxiang");
+        mqSender.sendHeader("hello  hanxiang");
         return Result.success("请求成功!");
     }
 
