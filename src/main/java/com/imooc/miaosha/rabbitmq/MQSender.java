@@ -20,6 +20,16 @@ public class MQSender {
     @Autowired
     RedisService redisService;
 
+    /**
+     * 秒杀接口优化,消息发送者
+     * @param mm
+     */
+    public void sendMiaosha(MiaoshaMessage mm) {
+        logger.info(String.format("run method params = %s", mm));
+        String msg = redisService.beanToString(mm);
+        amqpTemplate.convertAndSend(MQConfig.MIAOSHA_QUEUE, msg);
+    }
+
     public void send(Object message) {
         logger.error("发送的信息是:" + message);
         String msg = redisService.beanToString(message);

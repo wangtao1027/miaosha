@@ -37,7 +37,7 @@ public class OrderService {
         return orderDao.getOrderById(orderId);
     }
 
-    //穿件订单,创建订单表,穿件订单关联表
+    //穿件订单,创建订单表,创建订单关联表
     @Transactional(rollbackFor = Exception.class)
     public OrderInfo createOrder(MiaoshaUser user, GoodsVo goods) {
         OrderInfo orderInfo = new OrderInfo();
@@ -50,10 +50,11 @@ public class OrderService {
         orderInfo.setOrderChannel(1);
         orderInfo.setStatus(0);
         orderInfo.setCreateDate(new Date());
-        long orderId = orderDao.insert(orderInfo);  //返回插入表中数据的主键id
+//        long orderId = orderDao.insert(orderInfo);  //返回插入表中数据的主键id
+        orderDao.insert(orderInfo);
         MiaoShaOrder miaoShaOrder = new MiaoShaOrder();
         miaoShaOrder.setUserId(user.getId());
-        miaoShaOrder.setOrderId(orderId);
+        miaoShaOrder.setOrderId(orderInfo.getId()); //这里为什么可以这样写?
         miaoShaOrder.setGoodsId(goods.getId());
         orderDao.insertMiaoshaOrder(miaoShaOrder);
 

@@ -25,6 +25,15 @@ public class MQConfig {
     public static final String HEADERS_EXCHANGE = "headersExchage";
 
     /**
+     * 秒杀接口优化配置
+     * @return
+     */
+    @Bean
+    public Queue miaoshaQueue() {
+        return new Queue(MIAOSHA_QUEUE, true);
+    }
+
+    /**
      * Direct模式 交换机Exchange
      *
      * @return
@@ -43,6 +52,7 @@ public class MQConfig {
     public Queue topicQueue1() {
         return new Queue(TOPIC_QUEUE1, true);
     }
+
     @Bean
     public Queue topicQueue2() {
         return new Queue(TOPIC_QUEUE2, true);
@@ -65,6 +75,7 @@ public class MQConfig {
 
     /**
      * Fanout模式 交换机Exchange
+     *
      * @return
      */
     @Bean
@@ -84,6 +95,7 @@ public class MQConfig {
 
     /**
      * Header模式 交换机Exchange
+     *
      * @return
      */
     @Bean
@@ -93,14 +105,14 @@ public class MQConfig {
 
     @Bean
     public Queue headQueue1() {
-        return new Queue(HEADER_QUEUE,true);
+        return new Queue(HEADER_QUEUE, true);
     }
 
     @Bean
     public Binding headerBinding() {
-        Map<String,Object> map = new HashMap<String, Object>();
-        map.put("header1","value1");
-        map.put("header2","value2");
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("header1", "value1");
+        map.put("header2", "value2");
         return BindingBuilder.bind(headQueue1()).to(headersExchange()).whereAll(map).match();
     }
 
