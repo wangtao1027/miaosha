@@ -39,6 +39,26 @@ public class MiaoshaService {
         }
     }
 
+    /**
+     * 获取秒杀结果
+     * @param userId
+     * @param goodsId
+     * @return
+     */
+    public long getMiaoshaResult(long userId, long goodsId) {
+        GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
+        if (goods != null) {
+            return goods.getId();
+        } else {
+            boolean goodsOver = getGoodsOver(goodsId);
+            if (goodsOver) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
     //设置秒杀商品状态
     public void setGoodsOver(long gooodsId) {
         redisService.set(MiaoshaKey.gooodsOver, "" + gooodsId, true);

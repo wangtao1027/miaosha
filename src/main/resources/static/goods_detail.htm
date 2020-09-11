@@ -103,7 +103,7 @@
             success: function (data) {
                 if (data.code == 0) {
                     // window.location.href="/order_detail.htm?orderId="+data.data.id;      //跳转到详情页面
-                    getMiaoshaResult();
+                    getMiaoshaResult($("#goodsId").val());
                 } else {
                     layer.msg(data.msg());
                 }
@@ -115,13 +115,21 @@
     }
 
     //获取秒杀结果
-    function getMiaoshaResult() {
+    function getMiaoshaResult(goodsId) {
         $.ajax({
             url: "/miaosha/result",
             type: "GET",
             data: {goodsId: $("#goodsId").val()},
-            success: function () {
+            success: function (data) {
+                if (data.code < 0) {    //秒杀失败
+                    layer.msg("对不起,秒杀失败!");
+                } else if (data.code == 0) {    //继续轮询
+                    setTimeout(function () {
+                        getMiaoshaResult(goodsId),50
+                    });
+                } else {    //秒杀成功
 
+                }
             },
             error: function () {
 

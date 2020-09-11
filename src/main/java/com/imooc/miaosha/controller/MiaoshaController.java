@@ -85,10 +85,13 @@ public class MiaoshaController implements InitializingBean {        //实现这�
             return Result.error(CodeMsg.SESSION_ERROR);
         }
 
-        boolean success = miaoshaService.getGoodsOver(goodsId);
-        if (success) {
+        miaoshaService.getMiaoshaResult(user.getId(), goodsId);
 
-        }
+//        boolean success = miaoshaService.getGoodsOver(goodsId);
+//        if (success) {
+//
+//        }
+
 
         return null;
     }
