@@ -37,7 +37,7 @@ public class OrderService {
         return orderDao.getOrderById(orderId);
     }
 
-    //穿件订单,创建订单表,创建订单关联表
+    //创建订单,创建订单表,创建订单关联表
     @Transactional(rollbackFor = Exception.class)
     public OrderInfo createOrder(MiaoshaUser user, GoodsVo goods) {
         OrderInfo orderInfo = new OrderInfo();

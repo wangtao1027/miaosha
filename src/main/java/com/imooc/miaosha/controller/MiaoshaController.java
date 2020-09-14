@@ -87,11 +87,12 @@ public class MiaoshaController implements InitializingBean {        //实现这�
 
         miaoshaService.getMiaoshaResult(user.getId(), goodsId);
 
-//        boolean success = miaoshaService.getGoodsOver(goodsId);
-//        if (success) {
-//
-//        }
+        long miaoshaResult = miaoshaService.getMiaoshaResult(user.getId(), goodsId);
+        if (miaoshaResult == 1) {
 
+        } else {
+
+        }
 
         return null;
     }
@@ -130,7 +131,7 @@ public class MiaoshaController implements InitializingBean {        //实现这�
         MiaoshaMessage mm = new MiaoshaMessage();
         mm.setGoodsId(goodsId);
         mm.setUser(user);
-        mqSender.sendMiaosha(mm);
+        mqSender.sendMiaosha(mm);       //如果没有报错,就执行下一步
         return Result.success(0);       //排队中
 
 //        GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
