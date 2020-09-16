@@ -5,6 +5,8 @@ import com.imooc.miaosha.domain.MiaoshaUser;
 import com.imooc.miaosha.rabbitmq.MQSender;
 import com.imooc.miaosha.rabbitmq.MiaoshaMessage;
 import com.imooc.miaosha.redis.GoodsKey;
+import com.imooc.miaosha.redis.MiaoshaKey;
+import com.imooc.miaosha.redis.OrderKey;
 import com.imooc.miaosha.redis.RedisService;
 import com.imooc.miaosha.result.CodeMsg;
 import com.imooc.miaosha.result.Result;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -50,7 +53,7 @@ public class MiaoshaController implements InitializingBean {        //实现这�
     /**
      * 内存标记
      */
-    public Map<Long, Boolean> localMap = new HashMap<Long, Boolean>();
+    public Map<Long, Boolean> localMap = new HashMap<Long, Boolean>();      //值为true代表秒杀商品已经结束
 
     /**
      * 系统初始化执行方法
@@ -71,34 +74,8 @@ public class MiaoshaController implements InitializingBean {        //实现这�
     }
 
     /**
-     * 获取秒杀结果
-     * @param model
-     * @param user
-     * @param goodsId
-     * @return
-     */
-    @RequestMapping("/result")
-    @ResponseBody
-    public Result<String> result(Model model, MiaoshaUser user,@RequestParam("goodsId") Long goodsId) {
-        logger.info(String.format("run method result param=%s",goodsId));
-        if (user == null) {
-            return Result.error(CodeMsg.SESSION_ERROR);
-        }
-
-        miaoshaService.getMiaoshaResult(user.getId(), goodsId);
-
-        long miaoshaResult = miaoshaService.getMiaoshaResult(user.getId(), goodsId);
-        if (miaoshaResult == 1) {
-
-        } else {
-
-        }
-
-        return null;
-    }
-
-    /**
      * 执行秒杀方法
+     *
      * @param model
      * @param user
      * @param goodsId
@@ -114,10 +91,17 @@ public class MiaoshaController implements InitializingBean {        //实现这�
             return Result.error(CodeMsg.SESSION_ERROR);
         }
 
+        //内存标记,减少redis访问
+        Boolean over = localMap.get(goodsId);
+        if (over) {
+            return Result.error(CodeMsg.MIAO_SHA_OVER);
+        }
+
         //预减库存
         Long stock = redisService.decr(GoodsKey.getMiaoshaGoodsStock, "" + goodsId);
         //判断是否还有库存
         if (stock < 0) {
+            localMap.put(goodsId, true); //商品状态设置为结束
             return Result.error(CodeMsg.MIAO_SHA_OVER);
         }
 
@@ -131,7 +115,8 @@ public class MiaoshaController implements InitializingBean {        //实现这�
         MiaoshaMessage mm = new MiaoshaMessage();
         mm.setGoodsId(goodsId);
         mm.setUser(user);
-        mqSender.sendMiaosha(mm);       //如果没有报错,就执行下一步
+        //执行成功,程序继续,执行失败程序直接终端,前端收不到消息返回码
+        mqSender.sendMiaosha(mm);
         return Result.success(0);       //排队中
 
 //        GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
@@ -150,6 +135,55 @@ public class MiaoshaController implements InitializingBean {        //实现这�
 //        OrderInfo orderInfo = miaoshaService.miaosha(user, goods);
 //        return Result.success(orderInfo);
 
+    }
+
+    /**
+     * 获取秒杀结果
+     * goodsId : 成功
+     * -1 : 秒杀失败
+     * 0 : 继续轮询
+     *
+     * @param model
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping("/result")
+    @ResponseBody
+    public Result<Long> result(Model model, MiaoshaUser user, @RequestParam("goodsId") Long goodsId) {
+        logger.info(String.format("run method result param=%s", goodsId));
+        model.addAttribute("user", user);
+        if (user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        long result = miaoshaService.getMiaoshaResult(user.getId(), goodsId);
+        return Result.success(result);
+    }
+
+    /**
+     * 重置缓存中和数据库中的订单
+     *
+     * @param model
+     */
+    @RequestMapping(value = "/reset", method = RequestMethod.GET)
+    @ResponseBody
+    public Result<Boolean> reset(Model model) {
+        logger.info("run method reset");
+        List<GoodsVo> goodsList = goodsService.listGoodsVo();
+        for (GoodsVo goodsVo : goodsList) {
+            goodsVo.setStockCount(10);
+            //初始化库存数量
+            redisService.set(MiaoshaKey.gooodsOver, "" + goodsVo.getId(), goodsVo);
+            //商品秒杀状态设置为未结束
+            localMap.put(goodsVo.getId(), false);
+        }
+
+        //删除缓存中的订单数据
+        redisService.delete(OrderKey.getMiaoshaOrderByUidGid);
+        redisService.delete(MiaoshaKey.gooodsOver);
+
+        miaoshaService.reset(goodsList);
+        return Result.success(true);
     }
 
 }

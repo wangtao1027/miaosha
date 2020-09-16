@@ -4,6 +4,8 @@ import com.imooc.miaosha.dao.GoodsDao;
 import com.imooc.miaosha.domain.Goods;
 import com.imooc.miaosha.domain.MiaoShaGoods;
 import com.imooc.miaosha.vo.GoodsVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -11,6 +13,8 @@ import java.util.List;
 
 @Service
 public class GoodsService {
+
+    private final static Logger logger = LoggerFactory.getLogger(GoodsService.class);
 
     @Resource
     private GoodsDao goodsDao;
@@ -29,6 +33,18 @@ public class GoodsService {
         miaoShaGoods.setGoodsId(goodsVo.getId());
         int i = goodsDao.reduceStock(miaoShaGoods);
         return i > 0;
+    }
+
+    //重置数据库中所有商品的库存为10
+    public void resetStock(List<GoodsVo> goodsVoList) {
+        for (GoodsVo goodsVo : goodsVoList) {
+            MiaoShaGoods miaoShaGoods = new MiaoShaGoods();
+            miaoShaGoods.setGoodsId(goodsVo.getId());
+            miaoShaGoods.setStockCount(goodsVo.getStockCount());
+
+            logger.error(miaoShaGoods.toString());
+            goodsDao.resetStock(miaoShaGoods);
+        }
     }
 
     //批量查询

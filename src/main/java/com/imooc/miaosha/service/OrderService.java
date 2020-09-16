@@ -63,4 +63,11 @@ public class OrderService {
 
         return orderInfo;
     }
+
+    //删除订单
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteOrder() {
+        orderDao.deleteOrder();
+        orderDao.deleteOrderInfo();
+    }
 }

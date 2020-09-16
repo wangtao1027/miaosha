@@ -1,5 +1,6 @@
 package com.imooc.miaosha.service;
 
+import com.imooc.miaosha.domain.MiaoShaOrder;
 import com.imooc.miaosha.domain.MiaoshaUser;
 import com.imooc.miaosha.domain.OrderInfo;
 import com.imooc.miaosha.redis.MiaoshaKey;
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class MiaoshaService {
@@ -41,20 +44,22 @@ public class MiaoshaService {
 
     /**
      * 获取秒杀结果
+     *
      * @param userId
      * @param goodsId
      * @return
      */
     public long getMiaoshaResult(long userId, long goodsId) {
-        GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
-        if (goods != null) {
-            return goods.getId();
+        //缓存中获取是否获取到了秒杀商品
+        MiaoShaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
+        if (order != null) {
+            return order.getOrderId();
         } else {
             boolean goodsOver = getGoodsOver(goodsId);
             if (goodsOver) {
-                return -1;
+                return -1;  //秒杀失败
             } else {
-                return 0;
+                return 0;   //继续轮询
             }
         }
     }
@@ -67,6 +72,14 @@ public class MiaoshaService {
     //获取秒杀商品状态
     public boolean getGoodsOver(long goodsId) {
         return redisService.exists(MiaoshaKey.gooodsOver, "" + goodsId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void reset(List<GoodsVo> goodsVoList) {
+        //重置数据库库存
+        goodsService.resetStock(goodsVoList);
+        //删除订单
+        orderService.deleteOrder();
     }
 
 }

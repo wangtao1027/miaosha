@@ -20,4 +20,6 @@ public class MiaoShaGoods implements Serializable {
 
     private Date endDate;
 
+
+
 }

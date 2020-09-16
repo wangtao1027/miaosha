@@ -28,10 +28,10 @@ public class MQConfig {
      * 秒杀接口优化配置
      * @return
      */
-    @Bean
-    public Queue miaoshaQueue() {
-        return new Queue(MIAOSHA_QUEUE, true);
-    }
+//    @Bean
+//    public Queue miaoshaQueue() {
+//        return new Queue(MIAOSHA_QUEUE, true);
+//    }
 
     /**
      * Direct模式 交换机Exchange
