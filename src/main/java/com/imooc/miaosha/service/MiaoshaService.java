@@ -5,6 +5,8 @@ import com.imooc.miaosha.domain.MiaoshaUser;
 import com.imooc.miaosha.domain.OrderInfo;
 import com.imooc.miaosha.redis.MiaoshaKey;
 import com.imooc.miaosha.redis.RedisService;
+import com.imooc.miaosha.util.MD5Util;
+import com.imooc.miaosha.util.UUIDUtil;
 import com.imooc.miaosha.vo.GoodsVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,4 +84,22 @@ public class MiaoshaService {
         orderService.deleteOrder();
     }
 
+    //获取秒杀地址匹配结果
+    public boolean checkPath(MiaoshaUser user, Long goodsId, String path) {
+        if (user == null || path == null) {
+            return false;
+        }
+        String pathStr = redisService.get(MiaoshaKey.miaoshaPath, user.getId() + "_" + goodsId, String.class);
+        return path.equals(pathStr);
+    }
+
+    //创建秒杀地址
+    public String createMiaoshaPath(MiaoshaUser user, long goodsId) {
+        if (user == null || goodsId <= 0) {
+            return null;
+        }
+        String path = MD5Util.md5(UUIDUtil.uuid() + "123456");
+        redisService.set(MiaoshaKey.miaoshaPath, "" + user.getId() + "_" + goodsId, path);
+        return path;
+    }
 }

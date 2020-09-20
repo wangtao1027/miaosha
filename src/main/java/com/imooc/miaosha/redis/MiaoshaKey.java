@@ -7,10 +7,10 @@ package com.imooc.miaosha.redis;
  */
 public class MiaoshaKey extends BasePrefix {
 
-    public MiaoshaKey(String prefix) {
-        super(prefix);
+    public MiaoshaKey(int expireSeconds, String prefix) {
+        super(expireSeconds,prefix);
     }
 
-    public static MiaoshaKey gooodsOver = new MiaoshaKey("go");
-
+    public static MiaoshaKey gooodsOver = new MiaoshaKey(0, "go");
+    public static MiaoshaKey miaoshaPath = new MiaoshaKey(60, "mp");
 }

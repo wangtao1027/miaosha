@@ -45,7 +45,8 @@
                 <span id="miaoshaTip"></span>
             </td>
             <td>
-                <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="doMiaosha()">立即秒杀
+                <!--                <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="doMiaosha()">立即秒杀</button>-->
+                <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="getMiaoshaPath()">立即秒杀
                 </button>
                 <input type="hidden" name="goodsId" id="goodsId">
             </td>
@@ -94,10 +95,32 @@
         countDown();
     }
 
-    //执行秒杀请求
-    function doMiaosha() {
+    //获取秒杀地址方法
+    function getMiaoshaPath() {
+        //缓冲加载框
+        g_showLoading();
         $.ajax({
-            url: "/miaosha/do_miaosha",
+            url: "/miaosha/path",
+            type: "GET",
+            data: {goodsId: $("#goodsId").val()},
+            success: function (data) {
+                if (data.code == 0) {
+                    var path = data.data;
+                    doMiaosha(path);
+                } else {
+                    layer.msg(data.msg);
+                }
+            },
+            error: function () {
+                layer.msg("客户端请求错误!");
+            }
+        });
+    }
+
+    //执行秒杀请求
+    function doMiaosha(path) {
+        $.ajax({
+            url: "/miaosha/" + path + "/do_miaosha",
             type: "POST",
             data: {goodsId: $("#goodsId").val()},
             success: function (data) {
@@ -116,6 +139,8 @@
 
     //获取秒杀结果
     function getMiaoshaResult(goodsId) {
+        //缓冲加载框
+        g_showLoading();
         $.ajax({
             url: "/miaosha/result",
             type: "GET",
@@ -127,8 +152,8 @@
                         layer.msg("对不起,秒杀失败!");
                     } else if (result == 0) { //继续轮询
                         setTimeout(function () {
-                            getMiaoshaResult(goodsId), 50
-                        });
+                            getMiaoshaResult(goodsId), 200
+                        });     //这里给200而不是50是为了防止服务器压力太大导致相应缓慢
                     } else {
                         layer.confirm("恭喜您,秒杀成功! 是否立即查看订单?", {btn: ["确定", "取消"]},
                             function () {

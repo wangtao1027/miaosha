@@ -5,6 +5,9 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 秒杀商品实体列
+ */
 @Data
 public class MiaoShaGoods implements Serializable {
 

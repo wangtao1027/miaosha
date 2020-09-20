@@ -13,6 +13,8 @@ import com.imooc.miaosha.result.Result;
 import com.imooc.miaosha.service.GoodsService;
 import com.imooc.miaosha.service.MiaoshaService;
 import com.imooc.miaosha.service.OrderService;
+import com.imooc.miaosha.util.MD5Util;
+import com.imooc.miaosha.util.UUIDUtil;
 import com.imooc.miaosha.vo.GoodsVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +22,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -70,7 +69,6 @@ public class MiaoshaController implements InitializingBean {        //实现这�
             redisService.set(GoodsKey.getMiaoshaGoodsStock, "" + goodsVo.getId(), goodsVo.getStockCount());
             localMap.put(goodsVo.getId(), false);
         }
-
     }
 
     /**
@@ -81,14 +79,20 @@ public class MiaoshaController implements InitializingBean {        //实现这�
      * @param goodsId
      * @return
      */
-    @RequestMapping("/do_miaosha")
+    @RequestMapping("/{path}/do_miaosha")
     @ResponseBody
-    public Result<Integer> miaosha(Model model, MiaoshaUser user, @RequestParam("goodsId") Long goodsId) {
+    public Result<Integer> miaosha(Model model, MiaoshaUser user, @RequestParam("goodsId") Long goodsId, @PathVariable("path") String path) {
         logger.info(String.format("run method miaosha param=%s", goodsId));
         model.addAttribute("user", user);
         //判断用户是否登录
         if (user == null) {
             return Result.error(CodeMsg.SESSION_ERROR);
+        }
+
+        //校验秒杀地址
+        boolean check = miaoshaService.checkPath(user, goodsId, path);
+        if (!check) {
+            return Result.error(CodeMsg.REQUEST_ILLEGAL);
         }
 
         //内存标记,减少redis访问
@@ -184,6 +188,25 @@ public class MiaoshaController implements InitializingBean {        //实现这�
 
         miaoshaService.reset(goodsList);
         return Result.success(true);
+    }
+
+    /**
+     * 获取秒杀地址
+     *
+     * @param model
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = "/path", method = RequestMethod.GET)
+    @ResponseBody
+    public Result<String> getMiaoshaPath(Model model, MiaoshaUser user, @RequestParam("goodsId") Long goodsId) {
+        logger.info("run method getMiaoshaPath");
+        model.addAttribute("user", user);
+        if (user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        String path = miaoshaService.createMiaoshaPath(user, goodsId);
+        return Result.success(path);
     }
 
 }

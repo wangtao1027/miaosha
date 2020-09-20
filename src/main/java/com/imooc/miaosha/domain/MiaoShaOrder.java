@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 秒杀订单实体类
+ */
 @Data
 public class MiaoShaOrder implements Serializable {
 
