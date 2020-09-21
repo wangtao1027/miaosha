@@ -45,10 +45,13 @@
                 <span id="miaoshaTip"></span>
             </td>
             <td>
-                <!--                <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="doMiaosha()">立即秒杀</button>-->
-                <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="getMiaoshaPath()">立即秒杀
-                </button>
-                <input type="hidden" name="goodsId" id="goodsId">
+                <div class="form-inline">
+                    <img id="verifyCodeImg" width="80" height="32" style="display: none"/>
+                    <input id="verifyCode" class="form-control" style="display: none"/>
+                    <button class="btn btn-primary" type="button" id="buyButton" onclick="getMiaoshaPath()">立即秒杀
+                    </button>
+                    <input type="hidden" name="goodsId" id="goodsId">
+                </div>
             </td>
         </tr>
         <tr>
@@ -159,6 +162,7 @@
                             function () {
                                 window.location.href = "/order_detail.htm?orderId=" + result;      //跳转到详情页面
                             }, function () {
+                                //这里有一个bug,如果点击取消按钮之后就会显示商品库存扣减,但是存在第二次请求抢不到商品的情况
                                 layer.closeAll();
                             });
                     }
@@ -216,9 +220,18 @@
                 clearTimeout(timeout);
             }
             $("#miaoshaTip").html("秒杀进行中");
+
+            //只有在秒杀进行中,才进行验证码的展示
+            $("#verifyCodeImg").attr("src","/miaosha/verifyCode?goodsId=" + $("#goodsId").val());
+            //展示
+            $("#verifyCodeImg").show();
+            $("#verifyCode").show();
+
         } else {//秒杀已经结束
             $("#buyButton").attr("disabled", true);     //没开始之前按钮是不能进行点击的
             $("#miaoshaTip").html("秒杀已经结束");
+            $("#verifyCodeImg").hide();
+            $("#verifyCode").hide();
         }
     }
 </script>

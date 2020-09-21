@@ -24,6 +24,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -207,6 +213,35 @@ public class MiaoshaController implements InitializingBean {        //实现这�
         }
         String path = miaoshaService.createMiaoshaPath(user, goodsId);
         return Result.success(path);
+    }
+
+    /**
+     * 获取执行秒杀业务验证码
+     *
+     * @param response
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/verifyCode", method = RequestMethod.GET)
+    @ResponseBody
+    public Result<String> getMiaoshaVerifyCode(HttpServletResponse response, MiaoshaUser user, @RequestParam("goodsId") long goodsId) {
+        logger.info(String.format("run method getMiaoshaVerifyCode param=%s", goodsId));
+//        model.addAttribute("user", user);
+        if (user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        //生成验证码逻辑
+        try {
+            BufferedImage image = miaoshaService.createMiaoshaVerifyCode(user, goodsId);
+            OutputStream out = response.getOutputStream();
+            out.flush();
+            out.close();
+//            ImageIO.write(image,"JPEG",response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
