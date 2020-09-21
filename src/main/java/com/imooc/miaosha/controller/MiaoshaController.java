@@ -205,12 +205,19 @@ public class MiaoshaController implements InitializingBean {        //实现这�
      */
     @RequestMapping(value = "/path", method = RequestMethod.GET)
     @ResponseBody
-    public Result<String> getMiaoshaPath(Model model, MiaoshaUser user, @RequestParam("goodsId") Long goodsId) {
+    public Result<String> getMiaoshaPath(Model model, MiaoshaUser user, @RequestParam("goodsId") long goodsId, @RequestParam("verifyCode") int verifyCode) {
         logger.info("run method getMiaoshaPath");
         model.addAttribute("user", user);
         if (user == null) {
             return Result.error(CodeMsg.SESSION_ERROR);
         }
+
+        //验证验证码是否正确
+        boolean verifyResult = miaoshaService.checkVerifyCode(user, goodsId, verifyCode);
+        if (!verifyResult) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+
         String path = miaoshaService.createMiaoshaPath(user, goodsId);
         return Result.success(path);
     }
@@ -227,7 +234,6 @@ public class MiaoshaController implements InitializingBean {        //实现这�
     @ResponseBody
     public Result<String> getMiaoshaVerifyCode(HttpServletResponse response, MiaoshaUser user, @RequestParam("goodsId") long goodsId) {
         logger.info(String.format("run method getMiaoshaVerifyCode param=%s", goodsId));
-//        model.addAttribute("user", user);
         if (user == null) {
             return Result.error(CodeMsg.SESSION_ERROR);
         }
@@ -235,13 +241,14 @@ public class MiaoshaController implements InitializingBean {        //实现这�
         try {
             BufferedImage image = miaoshaService.createMiaoshaVerifyCode(user, goodsId);
             OutputStream out = response.getOutputStream();
+            ImageIO.write(image, "JPEG", out);
             out.flush();
             out.close();
-//            ImageIO.write(image,"JPEG",response);
+            return null;    //这里返回为空,是直接通过输出流将图片进行返回了
         } catch (IOException e) {
             e.printStackTrace();
+            return Result.error(CodeMsg.MIAOSHA_FAIL);
         }
-        return null;
     }
 
 }

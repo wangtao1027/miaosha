@@ -8,8 +8,8 @@ public class CodeMsg {
     public static CodeMsg SUCCESS = new CodeMsg(0, "success");
     public static CodeMsg SERVER_ERROR = new CodeMsg(500100, "服务端异常");
     public static CodeMsg BIND_ERROR = new CodeMsg(500101, "参数校验异常：%s");
-    public static CodeMsg PARAM_EMPTY = new CodeMsg(5000102,"参数为空");
-    public static CodeMsg REQUEST_ILLEGAL = new CodeMsg(5000103,"请求非法");
+    public static CodeMsg PARAM_EMPTY = new CodeMsg(5000102, "参数为空");
+    public static CodeMsg REQUEST_ILLEGAL = new CodeMsg(5000103, "请求非法");
     //登录模块 5002XX
     public static CodeMsg SESSION_ERROR = new CodeMsg(500210, "Session不存在或者已经失效");
     public static CodeMsg PASSWORD_EMPTY = new CodeMsg(500211, "登录密码不能为空");
@@ -26,11 +26,12 @@ public class CodeMsg {
     //秒杀模块 5005XX
     public static CodeMsg MIAO_SHA_OVER = new CodeMsg(500500, "商品已经秒杀完毕");
     public static CodeMsg REPEATE_MIAOSHA = new CodeMsg(500501, "不能重复秒杀");
+    public static CodeMsg MIAOSHA_FAIL = new CodeMsg(500502, "秒杀失败");
 
     //导入导出模块
-    public static CodeMsg TEMPLATE_DOWNLOAD_FAIL = new CodeMsg(500601,"模板下载失败");
-    public static CodeMsg EXCEL_IMPORT_FAIL = new CodeMsg(500602,"导入失败");
-    public static CodeMsg EXCEL_EXPORT_FAIL = new CodeMsg(500603,"导出失败");
+    public static CodeMsg TEMPLATE_DOWNLOAD_FAIL = new CodeMsg(500601, "模板下载失败");
+    public static CodeMsg EXCEL_IMPORT_FAIL = new CodeMsg(500602, "导入失败");
+    public static CodeMsg EXCEL_EXPORT_FAIL = new CodeMsg(500603, "导出失败");
 
     private CodeMsg(int code, String msg) {
         this.code = code;
@@ -48,7 +49,7 @@ public class CodeMsg {
     public CodeMsg fillArgs(Object... args) {
         this.code = code;
         String message = String.format(this.msg, args);
-        return new CodeMsg(code,message);
+        return new CodeMsg(code, message);
     }
 
     @Override
