@@ -178,6 +178,12 @@ public class MiaoshaService {
             return false;
         }
         Integer code = redisService.get(MiaoshaKey.getMiaoshaVerifyCode, "" + user.getId() + "_" + goodsId, Integer.class);
-        return verifyCode == code;
+        //参数,是否相等进行判断
+        if (code == null || !(verifyCode == code)) {
+            return false;
+        }
+        //从redis中进行删除
+        redisService.delete(MiaoshaKey.getMiaoshaVerifyCode, "" + user.getId() + "_" + goodsId);
+        return true;
     }
 }
