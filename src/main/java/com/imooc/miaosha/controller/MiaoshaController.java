@@ -183,7 +183,8 @@ public class MiaoshaController implements InitializingBean {        //实现这�
         for (GoodsVo goodsVo : goodsList) {
             goodsVo.setStockCount(10);
             //初始化库存数量
-            redisService.set(MiaoshaKey.gooodsOver, "" + goodsVo.getId(), goodsVo);
+//            redisService.set(MiaoshaKey.gooodsOver, "" + goodsVo.getId(), goodsVo);
+            redisService.set(GoodsKey.getMiaoshaGoodsStock, "" + goodsVo.getId(), 10);
             //商品秒杀状态设置为未结束
             localMap.put(goodsVo.getId(), false);
         }
@@ -215,7 +216,7 @@ public class MiaoshaController implements InitializingBean {        //实现这�
         //验证验证码是否正确
         boolean verifyResult = miaoshaService.checkVerifyCode(user, goodsId, verifyCode);
         if (!verifyResult) {
-            return Result.error(CodeMsg.SESSION_ERROR);
+            return Result.error(CodeMsg.ERROR_VERIFICATION_CODE);
         }
 
         String path = miaoshaService.createMiaoshaPath(user, goodsId);

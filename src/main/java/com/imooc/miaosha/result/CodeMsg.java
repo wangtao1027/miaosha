@@ -10,6 +10,8 @@ public class CodeMsg {
     public static CodeMsg BIND_ERROR = new CodeMsg(500101, "参数校验异常：%s");
     public static CodeMsg PARAM_EMPTY = new CodeMsg(5000102, "参数为空");
     public static CodeMsg REQUEST_ILLEGAL = new CodeMsg(5000103, "请求非法");
+    public static CodeMsg ERROR_VERIFICATION_CODE = new CodeMsg(5000104,"验证码错误");
+
     //登录模块 5002XX
     public static CodeMsg SESSION_ERROR = new CodeMsg(500210, "Session不存在或者已经失效");
     public static CodeMsg PASSWORD_EMPTY = new CodeMsg(500211, "登录密码不能为空");

@@ -141,6 +141,8 @@ public class MiaoshaService {
         //把验证码存到redis中
         int rnd = calc(verifyCode);
         redisService.set(MiaoshaKey.getMiaoshaVerifyCode, "" + user.getId() + "_" + goodsId, rnd);
+
+        //输出图片
         return image;
     }
 
