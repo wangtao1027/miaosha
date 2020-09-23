@@ -20,12 +20,25 @@
     <script type="text/javascript" th:src="@{/js/common.js}"></script>
 
 </head>
-<!--<style>-->
-<!--    body {-->
-<!--        background-color: #2aabd2;-->
-<!--        /*background-image: url("");*/-->
-<!--    }-->
-<!--</style>-->
+<style type="text/css">
+    html,body{
+        height:100%;
+        width:100%;
+    }
+    body{
+        background:url('/img/bg.jpg') no-repeat;
+        background-size:100% 100%;
+        padding-top:100px;
+    }
+    .bottom_footer {
+        position: fixed; /*or前面的是absolute就可以用*/
+        bottom: 0px;
+    }
+</style>
+
+<style>
+
+</style>
 <body>
 
 <form name="loginForm" id="loginForm" method="post"  style="width:50%; margin:0 auto">

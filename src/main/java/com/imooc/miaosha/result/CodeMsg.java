@@ -11,6 +11,7 @@ public class CodeMsg {
     public static CodeMsg PARAM_EMPTY = new CodeMsg(5000102, "参数为空");
     public static CodeMsg REQUEST_ILLEGAL = new CodeMsg(5000103, "请求非法");
     public static CodeMsg ERROR_VERIFICATION_CODE = new CodeMsg(5000104,"验证码错误");
+    public static CodeMsg ACCESS_LIMIT_REACHED = new CodeMsg(5000105,"访问太频繁!");
 
     //登录模块 5002XX
     public static CodeMsg SESSION_ERROR = new CodeMsg(500210, "Session不存在或者已经失效");

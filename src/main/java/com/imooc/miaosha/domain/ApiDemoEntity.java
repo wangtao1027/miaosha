@@ -20,4 +20,5 @@ public class ApiDemoEntity implements Serializable {
     private Double goodsPrice;
     private Integer goodsStock;
     private Integer goodsStatus;
+
 }

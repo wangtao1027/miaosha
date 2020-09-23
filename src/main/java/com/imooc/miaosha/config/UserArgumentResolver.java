@@ -57,4 +57,25 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         }
         return null;
     }
+
+    //方法作用域提升
+    /*
+    *
+    * private String getCookieValue(HttpServletRequest request, String cookiName) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null || cookies.length <= 0) {
+            return null;
+        }
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(cookiName)) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
+    *
+    *
+    *
+    *
+    * */
 }

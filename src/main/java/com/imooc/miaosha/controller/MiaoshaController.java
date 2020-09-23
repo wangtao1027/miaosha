@@ -4,10 +4,7 @@ import com.imooc.miaosha.domain.MiaoShaOrder;
 import com.imooc.miaosha.domain.MiaoshaUser;
 import com.imooc.miaosha.rabbitmq.MQSender;
 import com.imooc.miaosha.rabbitmq.MiaoshaMessage;
-import com.imooc.miaosha.redis.GoodsKey;
-import com.imooc.miaosha.redis.MiaoshaKey;
-import com.imooc.miaosha.redis.OrderKey;
-import com.imooc.miaosha.redis.RedisService;
+import com.imooc.miaosha.redis.*;
 import com.imooc.miaosha.result.CodeMsg;
 import com.imooc.miaosha.result.Result;
 import com.imooc.miaosha.service.GoodsService;
@@ -26,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -206,12 +204,30 @@ public class MiaoshaController implements InitializingBean {        //实现这�
      */
     @RequestMapping(value = "/path", method = RequestMethod.GET)
     @ResponseBody
-    public Result<String> getMiaoshaPath(Model model, MiaoshaUser user, @RequestParam("goodsId") long goodsId, @RequestParam("verifyCode") int verifyCode) {
+    public Result<String> getMiaoshaPath(HttpServletRequest request, Model model, MiaoshaUser user, @RequestParam("goodsId") long goodsId,
+                                         @RequestParam(value = "verifyCode",defaultValue = "0") int verifyCode) {
         logger.info("run method getMiaoshaPath");
         model.addAttribute("user", user);
         if (user == null) {
             return Result.error(CodeMsg.SESSION_ERROR);
         }
+
+        /***********************测试接口防刷逻辑********************************/
+        //查询访问次数  5秒钟访问5次,从用户第一次访问开始计时,超过5次给出错误提示
+        String requestURI = request.getRequestURI();
+        String key = requestURI + "_" + user.getId();
+        Integer count = redisService.get(AccessKey.access, key, Integer.class);
+        //访问次数大于
+        if (count == null) {
+            //0次直接添加一次
+            redisService.set(AccessKey.access, key, 1);
+        } else if (count < 5) {
+            //小于5次直接添加一次
+            redisService.incr(AccessKey.access, key);
+        } else {
+            return Result.error(CodeMsg.ACCESS_LIMIT_REACHED);  //访问次数太频繁
+        }
+        /***********************测试接口防刷逻辑********************************/
 
         //验证验证码是否正确
         boolean verifyResult = miaoshaService.checkVerifyCode(user, goodsId, verifyCode);
