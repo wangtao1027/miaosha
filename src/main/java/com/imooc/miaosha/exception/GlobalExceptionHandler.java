@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
             GlobalException globalException = (GlobalException) e;
             return Result.error(globalException.getCm());
         } else if (e instanceof BindException) {    //参数绑定异常
-            org.springframework.validation.BindException ex = (BindException) e;
+            BindException ex = (BindException) e;
             List<ObjectError> errors = ex.getAllErrors();   //取很多个错误列表
             ObjectError error = errors.get(0);  //默认取第一(为什么要取第一个,因为报错的时候通常第一个是引起的错误)
             String msg = error.getDefaultMessage();

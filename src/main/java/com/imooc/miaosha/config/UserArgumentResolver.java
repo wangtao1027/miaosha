@@ -1,5 +1,6 @@
 package com.imooc.miaosha.config;
 
+import com.imooc.miaosha.access.UserContext;
 import com.imooc.miaosha.domain.MiaoshaUser;
 import com.imooc.miaosha.service.MiaoshaUserService;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
@@ -28,54 +29,39 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
-
-        String paramToken = request.getParameter(MiaoshaUserService.COOKI_NAME_TOKEN);
-        String cookieToken = getCookieValue(request, MiaoshaUserService.COOKI_NAME_TOKEN);
-        if (StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
-            //如果都为空则返回登录页面
-            return "login";
-        }
-
-        String token = StringUtils.isEmpty(paramToken) ? cookieToken : paramToken;    //如果参数中为空,则从cookie中开始取
-        return userService.getByToken(response, token);  //这里面response可能是一个空的
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+        return UserContext.getUser();
     }
 
-    private String getCookieValue(HttpServletRequest request, String cookiName) {
+//    @Override
+//    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+//                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+//        HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+//        HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
+//
+//        String paramToken = request.getParameter(MiaoshaUserService.COOKI_NAME_TOKEN);
+//        String cookieToken = getCookieValue(request, MiaoshaUserService.COOKI_NAME_TOKEN);
+//        if (StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
+//            //如果都为空则返回登录页面
+//            return "login";
+//        }
+//
+//        String token = StringUtils.isEmpty(paramToken) ? cookieToken : paramToken;    //如果参数中为空,则从cookie中开始取
+//        return userService.getByToken(response, token);  //这里面response可能是一个空的
+//    }
 
-        Cookie[] cookies = request.getCookies();    //遍历所以cookie
-        if (cookies == null || cookies.length <= 0) {
-            return null;
-        }
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(cookiName)) {
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
+//    private String getCookieValue(HttpServletRequest request, String cookiName) {
+//
+//        Cookie[] cookies = request.getCookies();    //遍历所以cookie
+//        if (cookies == null || cookies.length <= 0) {
+//            return null;
+//        }
+//        for (Cookie cookie : cookies) {
+//            if (cookie.getName().equals(cookiName)) {
+//                return cookie.getValue();
+//            }
+//        }
+//        return null;
+//    }
 
-    //方法作用域提升
-    /*
-    *
-    * private String getCookieValue(HttpServletRequest request, String cookiName) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null || cookies.length <= 0) {
-            return null;
-        }
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(cookiName)) {
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
-    *
-    *
-    *
-    *
-    * */
 }

@@ -11,6 +11,10 @@ public class AccessKey extends BasePrefix {
         super(expireSeconds, prefix);
     }
 
-    public static AccessKey access = new AccessKey(5,"ac");     //5秒内次数超过5次,提示访问太频繁
+//    public static AccessKey access = new AccessKey(5,"ac");     //5秒内次数超过5次,提示访问太频繁
+
+    public static AccessKey withExpire(int expireSeconds) {         //输入指定的秒杀,访问次数
+        return new AccessKey(expireSeconds, "access");
+    }
 
 }
