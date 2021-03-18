@@ -23,6 +23,7 @@ public class MQConfig {
     public static final String TOPIC_EXCHANGE = "topicExchage";
     public static final String FANOUT_EXCHANGE = "fanoutxchage";
     public static final String HEADERS_EXCHANGE = "headersExchage";
+    public static final String SEND_SMS = "send.sms";
 
     /**
      * 秒杀接口优化配置
@@ -32,6 +33,15 @@ public class MQConfig {
 //    public Queue miaoshaQueue() {
 //        return new Queue(MIAOSHA_QUEUE, true);
 //    }
+
+    /**
+     * 初始化短信消息bean
+     * @return
+     */
+    @Bean
+    public Queue sendSmsQueue() {
+        return new Queue(SEND_SMS,true);
+    }
 
     /**
      * Direct模式 交换机Exchange

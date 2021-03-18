@@ -34,7 +34,7 @@ public class LoginController {
     @RequestMapping("/do_login")
     @ResponseBody
     public Result<Boolean> doLogin(HttpServletResponse response,@Valid LoginVo loginVo) {
-        logger.info(loginVo.toString());    //d3b1294a61a07da9b49b6e22b2cbd7f9
+        logger.info(String.format("run method doLogin params = %s", loginVo.toString()));
         userService.login(response,loginVo);
         return Result.success(true);
     }

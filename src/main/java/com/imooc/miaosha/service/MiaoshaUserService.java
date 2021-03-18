@@ -4,6 +4,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.imooc.miaosha.dao.MiaoshaUserDao;
 import com.imooc.miaosha.domain.MiaoshaUser;
 import com.imooc.miaosha.exception.GlobalException;
+import com.imooc.miaosha.redis.CheckCodeKey;
 import com.imooc.miaosha.redis.MiaoshaUserKey;
 import com.imooc.miaosha.redis.RedisService;
 import com.imooc.miaosha.result.CodeMsg;
@@ -81,6 +82,7 @@ public class MiaoshaUserService {
         }
         String mobile = loginVo.getMobile();
         String password = loginVo.getPassword();
+        String checkCode = loginVo.getCheckCode();
 
         //校验手机号
         MiaoshaUser user = getById(Long.valueOf(mobile));
@@ -96,11 +98,18 @@ public class MiaoshaUserService {
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }
 
+        //校验短信验证码
+        //缓存中取出验证码,对比
+        String dbCheckCode = redisService.get(CheckCodeKey.getCheckCode, mobile, String.class);
+        if (dbCheckCode == null || !dbCheckCode.equals(checkCode)) {
+            throw new GlobalException(CodeMsg.CHECK_CODE_ERROR);
+        }
+
         //登录成功生成token,写入cookie中,传递给客户端,客户端再随后的访问中都在cookie中上传这个token,服务端取到token来得到用户对应的session信息
         String token = UUIDUtil.uuid();
 //        redisService.set(MiaoshaUserKey.token,token,user);  //将用户信息存入到缓存中
 //        Cookie cookie = new Cookie(COOKI_NAME_TOKEN,token);
-//        cookie.setMaxAge(MiaoshaUserKey.token.expireSeconds()); //如果redis中的数据过期,那么cookie中的数据也过期
+//        cookie.setMaxAge(MiaoshaUserKey.tokxlen.expireSeconds()); //如果redis中的数据过期,那么cookie中的数据也过期
 //        cookie.setPath("/");
 //        response.addCookie(cookie); //写入到response中即可
         addCookie(response,token,user);

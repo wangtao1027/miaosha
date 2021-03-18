@@ -16,4 +16,8 @@ public class LoginVo {
     @NotNull
     @Length(min = 32)   //长度最小为32
     private String password;
+
+    @NotNull
+    @Length(min = 6)
+    private String checkCode;
 }
