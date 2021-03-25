@@ -3,6 +3,7 @@ package com.imooc.miaosha.service;
 import com.imooc.miaosha.dao.GoodsDao;
 import com.imooc.miaosha.domain.Goods;
 import com.imooc.miaosha.domain.MiaoShaGoods;
+import com.imooc.miaosha.model.GoodsModel;
 import com.imooc.miaosha.vo.GoodsVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

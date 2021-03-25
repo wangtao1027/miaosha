@@ -1,9 +1,11 @@
 package com.imooc.miaosha.controller;
 
 import com.imooc.miaosha.domain.ApiDemoEntity;
+import com.imooc.miaosha.domain.Goods;
 import com.imooc.miaosha.model.GoodsModel;
 import com.imooc.miaosha.result.Result;
 import com.imooc.miaosha.service.ApiDemoService;
+import com.imooc.miaosha.service.GoodsService;
 import com.imooc.miaosha.util.ExcelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,9 @@ public class ExcelController {
     @Autowired
     private ApiDemoService apiDemoService;
 
+    @Autowired
+    private GoodsService goodsService;
+
     /**
      * 下载模板
      *
@@ -49,7 +54,7 @@ public class ExcelController {
      */
     @RequestMapping("/import")
     @ResponseBody
-    public Result<List<GoodsModel>> importTemplate(MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+    public Result<Boolean> importTemplate(MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         logger.info("run method importTemplate");
         List<GoodsModel> goodsModels = null;
         try {
@@ -59,10 +64,23 @@ public class ExcelController {
         }
 
         //插入数据,批量插入,在mapper中进行操作
+        ArrayList<Goods> goods = new ArrayList<Goods>();
 
+        for (GoodsModel goodsModel : goodsModels) {
+            Goods good = new Goods();
+            good.setId(goodsModel.getId());
+            good.setGoodsDetail(goodsModel.getGoodsDetail());
+            good.setGoodsImg(goodsModel.getGoodsImg());
+            good.setGoodsName(goodsModel.getGoodsName());
+            good.setGoodsPrice(goodsModel.getGoodsPrice());
+            good.setGoodsStock(goodsModel.getGoodsStock());
+            good.setGoodsTitle(goodsModel.getGoodsTitle());
+            goods.add(good);
+        }
+        int i = goodsService.batchInsert(goods);
         //重新查询数据,放入模型数据中,刷新页面
 
-        return Result.success(goodsModels);
+        return Result.success(i > 0);
     }
 
     /**
